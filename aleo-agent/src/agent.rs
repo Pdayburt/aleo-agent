@@ -408,32 +408,21 @@ impl Agent {
         // priority_fee_in_microcredits: u64,
         // query: Option<Query<N, C::BlockStorage>>,
         // rng: &mut R,
-        let pk = self.account().private_key();
-        println!("pk {}", pk);
-        let iter = inputs.iter();
-        println!("iter {:?}", iter);
-        let fee_record = args.fee_record;
-        println!("fee_record {:?}", fee_record);
-        let priority_fee = args.priority_fee;
-        println!("priority_fee {:?}", priority_fee);
         let query = Some(query);
-        //println!("query {}",query.unwrap().to_owned());
         let start = Instant::now();
         let execution = vm.execute(
-            pk,
+            self.account().private_key(),
             ("credits.aleo", transfer_function),
-            iter,
+            inputs.iter(),
             None,
-            priority_fee,
-            // None, // 不提供 Query，保持离线
-            query,
+            args.priority_fee,
+             //None, // 不提供 Query，保持离线
+             query,
             rng,
         )?;
-
         let duration = start.elapsed();
         println!("vm.execute执行的消耗时间为: {:?}", duration);
-        println!("execution  {:?}", execution.to_string().clone());
-       // self.broadcast_transaction(&execution)
+        // self.broadcast_transaction(&execution)
         Ok(execution.to_string())
     }
 }
