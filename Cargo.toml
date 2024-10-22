@@ -6,6 +6,7 @@ members = [
     "examples/transfer"
 ]
 
+
 [workspace.package]
 version = "1.1.1"
 authors = ["Essen <czgelite@gmail.com>"]
@@ -16,14 +17,16 @@ license = "Apache-2.0"
 
 [workspace.dependencies]
 aleo-agent = { path = "aleo-agent", version = "1.0.1" }
-
-anyhow = "1"
+anyhow = "1.0.87"
 rand = "0.8.5"
 rand_chacha = "0.3"
 thiserror = "1"
+ureq = "2.10.1"
+
 
 [workspace.dependencies.snarkvm]
 git = "https://github.com/AleoNet/snarkVM.git"
-branch = "mainnet-staging"
-version = "0.16.19"
-features = ["circuit", "console", "rocks"]
+#branch = "mainnet-staging"
+branch = "mainnet"
+default-features = true
+#features = ["circuit", "console", "rocks"]

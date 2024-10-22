@@ -174,6 +174,7 @@ impl Agent {
     pub fn broadcast_transaction(&self, transaction: &Transaction) -> Result<String> {
         let url = format!(
             "{}/{}/transaction/broadcast",
+            //https://api.explorer.provable.com/v1/testnet/transaction/broadcast
             self.base_url(),
             self.network()
         );

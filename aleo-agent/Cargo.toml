@@ -19,10 +19,19 @@ anyhow = { workspace = true }
 rand = { workspace = true }
 rand_chacha = { workspace = true }
 thiserror = { workspace = true }
+indexmap = "2.2.6"
+once_cell = "1.19.0"
+ureq = { workspace = true }
+
 
 [dependencies.snarkvm]
 git = "https://github.com/AleoNet/snarkVM.git"
 branch = "mainnet"
+snarkvm = { workspace = true }
+
+#[dependencies.snarkvm]
+#git = "https://github.com/AleoNet/snarkVM.git"
+#branch = "mainnet"
 
 ureq = "2.9.6"
 indexmap = "2"

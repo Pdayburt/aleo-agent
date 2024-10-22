@@ -1,12 +1,94 @@
 use aleo_agent::account::Account;
 use aleo_agent::agent::{Agent, TransferArgs, TransferType};
-use aleo_agent::{CiphertextRecord, PlaintextRecord, MICROCREDITS};
+use aleo_agent::{Address, CiphertextRecord, Identifier, Network, PlaintextRecord, PrivateKey, ProgramID, Value, MICROCREDITS};
 use anyhow::Result;
 use std::str::FromStr;
 
-fn main() -> Result<()> {
+
+#[test]
+fn test_pvp()-> Result<()>{
+    let bob_key = "APrivateKey1zkp7sFhPXR94xWjWbDqMyNs6KsUHfwudMzDfqGvoygcZA25";
+    let bob_account = Account::from_private_key(bob_key)?;
+    let bob_address = bob_account.address();
+    println!("{:?}", bob_account);
+    println!("{:?}", bob_address);
+    Ok(())
+}
+#[test]
+fn test_transfer() -> Result<()> {
     
     // private key format: APrivateKey1zkp...
+    let alice_key = "APrivateKey1zkp7WjP4mgYpkak2MDa9oPXuvfm1xU45fuEfFyTSvMMN6xK";
+    let alice_account = Account::from_private_key(alice_key)?;
+    let alice_agent = Agent::builder().with_account(alice_account).build();
+
+    let bob_key = "APrivateKey1zkp7sFhPXR94xWjWbDqMyNs6KsUHfwudMzDfqGvoygcZA25";
+    let bob_account = Account::from_private_key(bob_key)?;
+    let bob_address = bob_account.address();
+
+    //alice_account
+    //Account{privateKey:"APrivateKey1zkp7WjP4mgYpkak2MDa9oPXuvfm1xU45fuEfFyTSvMMN6xK",
+    //	viewKey:"AViewKey1kAUqjVfLhqzvyumzgtadUgCXjBmkfk3cukHJoS7h3pndE",
+    //	address:"aleo1qs5qdk6le32z3wv73f6zl5cswjwew3qjpxkwrqxnedxxckgfeuxsd0whp8"}
+    //          ·
+
+    //bob_account
+    //Account{privateKey:"APrivateKey1zkp7sFhPXR94xWjWbDqMyNs6KsUHfwudMzDfqGvoygcZA25",
+    //	viewKey:"AViewKey1nKwqw3B7DDkGdu4PsoN9tjy1Enuo8GahZta8FfkqMipS",
+    //	address:"aleo1tgys9nhnytn2femfggn7638fj6e8rera6e0xxdcvp36crzv28y8sncnzaf"}
+
+
+    // get alice public balance
+  /*  let public_balance = alice_agent.get_public_balance()?;
+    println!("Alice Public Balance : {}", public_balance);*/
+    
+    // public transfer to public account
+    let transfer_args = TransferArgs::from(
+       /* amount: u64,
+        recipient_address: Address,
+        priority_fee: u64,
+        fee_record: Option<PlaintextRecord>,
+        transfer_type: TransferType,*/
+        4_000_000,
+        //MICROCREDITS, // 1 credit
+        bob_address.to_owned(),
+        600_000,
+        None,
+        TransferType::Public,
+    );
+    let tx_hash = alice_agent.transfer(transfer_args)?;
+    println!("execution: {tx_hash}");
+
+    Ok(())
+}
+
+#[test]
+fn test_public_balance(){
+    // private key format: APrivateKey1zkp...
+    let private_key = "APrivateKey1zkp7sFhPXR94xWjWbDqMyNs6KsUHfwudMzDfqGvoygcZA25";
+    // build an account using the private key
+    let account = Account::from_private_key(private_key).unwrap();
+    // build an agent using the account
+    let agent = Agent::builder().with_account(account).build();
+
+    let public_balance = agent.get_public_balance().unwrap();
+    println!("Public Balance : {}", public_balance);
+
+   /* let recipient_address = Address::from_str(recipient_address).expect("Invalid recipient address");
+
+    let transfer_args = TransferArgs::from(
+        MICROCREDITS, // transfer 1 credit
+        recipient_address,
+        1, // priority fee
+        None, // no record, using public balance
+        TransferType::Public, // transfer 1 credit using public balance
+    );*/
+
+
+}
+fn main()  {
+
+  /*  // private key format: APrivateKey1zkp...
     let alice_key = "Alice PRIVATE KEY";
     let alice_account = Account::from_private_key(alice_key)?;
     let alice_agent = Agent::builder().with_account(alice_account).build();
@@ -14,11 +96,11 @@ fn main() -> Result<()> {
     let bob_key = "Bob PRIVATE KEY";
     let bob_account = Account::from_private_key(bob_key)?;
     let bob_address = bob_account.address();
-    
+
     // get alice public balance
     let public_balance = alice_agent.get_public_balance()?;
     println!("Alice Public Balance : {}", public_balance);
-    
+
     // public transfer to public account
     let transfer_args = TransferArgs::from(
         MICROCREDITS, // 1 credit
@@ -72,7 +154,7 @@ fn main() -> Result<()> {
         TransferType::Private(record),
     );
     let tx_hash = alice_agent.transfer(transfer_args)?;
-    println!("tx_hash: {tx_hash}");
+    println!("tx_hash: {tx_hash}");*/
 
-    Ok(())
 }
+

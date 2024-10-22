@@ -8,11 +8,17 @@ use snarkvm::circuit::prelude::num_traits::ToPrimitive;
 use std::fmt;
 use std::ops::Range;
 use std::str::FromStr;
+use std::time::Instant;
+
+
+use ureq;
+use ureq::Proxy;
 
 use crate::{
     Address, CiphertextRecord, ConsensusStore, CurrentNetwork, Entry, Field, Identifier, Literal,
-    Plaintext, PlaintextRecord, ProgramID, Query, Transaction, Value, DEFAULT_BASE_URL,
-    DEFAULT_TESTNET, VM,
+    Plaintext, PlaintextRecord, ProgramID, Query, Value, DEFAULT_BASE_URL,
+    DEFAULT_TESTNET, VM, Transaction,
+    //,
 };
 
 #[derive(Clone)]
@@ -394,16 +400,41 @@ impl Agent {
         // Specify the network state query
         let query = Query::from(self.base_url().clone());
         // Create a new transaction.
+        // &self,
+        // private_key: &PrivateKey<N>,
+        // (program_id, function_name): (impl TryInto<ProgramID<N>>, impl TryInto<Identifier<N>>),
+        // inputs: impl ExactSizeIterator<Item = impl TryInto<Value<N>>>,
+        // fee_record: Option<Record<N, Plaintext<N>>>,
+        // priority_fee_in_microcredits: u64,
+        // query: Option<Query<N, C::BlockStorage>>,
+        // rng: &mut R,
+        let pk = self.account().private_key();
+        println!("pk {}", pk);
+        let iter = inputs.iter();
+        println!("iter {:?}", iter);
+        let fee_record = args.fee_record;
+        println!("fee_record {:?}", fee_record);
+        let priority_fee = args.priority_fee;
+        println!("priority_fee {:?}", priority_fee);
+        let query = Some(query);
+        //println!("query {}",query.unwrap().to_owned());
+        let start = Instant::now();
         let execution = vm.execute(
-            self.account().private_key(),
+            pk,
             ("credits.aleo", transfer_function),
-            inputs.iter(),
-            args.fee_record,
-            args.priority_fee,
-            Some(query),
+            iter,
+            None,
+            priority_fee,
+            // None, // 不提供 Query，保持离线
+            query,
             rng,
         )?;
-        self.broadcast_transaction(&execution)
+
+        let duration = start.elapsed();
+        println!("vm.execute执行的消耗时间为: {:?}", duration);
+        println!("execution  {:?}", execution.to_string().clone());
+       // self.broadcast_transaction(&execution)
+        Ok(execution.to_string())
     }
 }
 
