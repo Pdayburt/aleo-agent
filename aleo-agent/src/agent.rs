@@ -398,26 +398,19 @@ impl Agent {
         let store = ConsensusStore::open(None)?;
         let vm = VM::from(store)?;
         // Specify the network state query
-        let query = Query::from(self.base_url().clone());
+       // let query = Query::from(self.base_url().clone());
         // Create a new transaction.
-        // &self,
-        // private_key: &PrivateKey<N>,
-        // (program_id, function_name): (impl TryInto<ProgramID<N>>, impl TryInto<Identifier<N>>),
-        // inputs: impl ExactSizeIterator<Item = impl TryInto<Value<N>>>,
-        // fee_record: Option<Record<N, Plaintext<N>>>,
-        // priority_fee_in_microcredits: u64,
-        // query: Option<Query<N, C::BlockStorage>>,
-        // rng: &mut R,
-        let query = Some(query);
+      //  let query = Some(query);
         let start = Instant::now();
+
         let execution = vm.execute(
             self.account().private_key(),
             ("credits.aleo", transfer_function),
             inputs.iter(),
             None,
             args.priority_fee,
-             //None, // 不提供 Query，保持离线
-             query,
+            None, // 不提供 Query，保持离线
+          //  query,
             rng,
         )?;
         let duration = start.elapsed();

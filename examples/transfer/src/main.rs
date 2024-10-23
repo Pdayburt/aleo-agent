@@ -49,7 +49,7 @@ fn test_transfer() -> Result<()> {
         priority_fee: u64,
         fee_record: Option<PlaintextRecord>,
         transfer_type: TransferType,*/
-        4_000_000,
+        10_000_000,
         //MICROCREDITS, // 1 credit
         bob_address.to_owned(),
         600_000,
@@ -58,21 +58,32 @@ fn test_transfer() -> Result<()> {
     );
     let tx_hash = alice_agent.transfer(transfer_args)?;
     println!("execution: {tx_hash}");
-
     Ok(())
 }
 
 #[test]
 fn test_public_balance(){
     // private key format: APrivateKey1zkp...
-    let private_key = "APrivateKey1zkp7sFhPXR94xWjWbDqMyNs6KsUHfwudMzDfqGvoygcZA25";
+    let alice_private_key = "APrivateKey1zkp7WjP4mgYpkak2MDa9oPXuvfm1xU45fuEfFyTSvMMN6xK";
     // build an account using the private key
-    let account = Account::from_private_key(private_key).unwrap();
+    let alice_account = Account::from_private_key(alice_private_key).unwrap();
     // build an agent using the account
-    let agent = Agent::builder().with_account(account).build();
+    let alice_agent = Agent::builder().with_account(alice_account).build();
 
-    let public_balance = agent.get_public_balance().unwrap();
-    println!("Public Balance : {}", public_balance);
+    let alice_public_balance = alice_agent.get_public_balance().unwrap();
+    println!("alice Public Balance : {}", alice_public_balance);
+
+    // private key format: APrivateKey1zkp...
+    let bob_private_key = "APrivateKey1zkp7sFhPXR94xWjWbDqMyNs6KsUHfwudMzDfqGvoygcZA25";
+    // build an account using the private key
+    let bob_account = Account::from_private_key(bob_private_key).unwrap();
+    // build an agent using the account
+    let bob_agent = Agent::builder().with_account(bob_account).build();
+
+    let bob_public_balance = bob_agent.get_public_balance().unwrap();
+    println!("bob Public Balance : {}", bob_public_balance);
+
+
 
    /* let recipient_address = Address::from_str(recipient_address).expect("Invalid recipient address");
 
