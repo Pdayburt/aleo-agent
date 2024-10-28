@@ -1,32 +1,28 @@
-[workspace]
-resolver = "2"
-members = [
-    "aleo-agent",
-    "examples/deploy",
-    "examples/transfer"
-]
-
-
-[workspace.package]
+[package]
+name = "aleo-agent"
 version = "1.1.1"
-authors = ["Essen <czgelite@gmail.com>"]
+authors = ["Noah <noah@legend.tech>"]
 edition = "2021"
-repository = "https://github.com/C-B-Elite/aleo-agent"
 rust-version = "1.78.0"
 license = "Apache-2.0"
+description = "Agent library to communicate with the Aleo Network"
 
-[workspace.dependencies]
-aleo-agent = { path = "aleo-agent", version = "1.0.1" }
+
+[dependencies]
 anyhow = "1.0.87"
 rand = "0.8.5"
 rand_chacha = "0.3"
 thiserror = "1"
+indexmap = "2.2.6"
+once_cell = "1.19.0"
 ureq = "2.10.1"
 
-
-[workspace.dependencies.snarkvm]
+[dependencies.snarkvm]
 git = "https://github.com/AleoNet/snarkVM.git"
-#branch = "mainnet-staging"
 branch = "mainnet"
 default-features = true
-#features = ["circuit", "console", "rocks"]
+
+[features]
+default = ["testnet"]  # 默认使用测试网
+testnet = []          # 测试网特性
+mainnet = []          # 主网特性
