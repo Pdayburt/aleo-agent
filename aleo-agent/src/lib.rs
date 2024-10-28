@@ -42,7 +42,7 @@
 //!         None, // no record, using public balance
 //!         TransferType::Public, // transfer 1 credit using public balance
 //!     );
-//!     let tx_hash = agent.transfer(transfer_args)?;
+//!     let tx_hash = agent.transfer("",transfer_args)?;
 //!     println!("Transfer tx hash: {}", tx_hash);
 //!     
 //!     Ok(())
@@ -64,7 +64,7 @@ pub use snarkvm::prelude::{
     Entry,Literal,Network,Record
 };
 pub use snarkvm::ledger::store::helpers::memory::BlockMemory;
-use snarkvm::prelude::MainnetV0;
+
 
 pub mod account;
 pub mod agent;
@@ -73,8 +73,14 @@ pub mod chain;
 pub mod deploy;
 pub mod program;
 
-// GLOBAL DECLARATIONS
+
+#[cfg(feature = "testnet")]
 pub type CurrentNetwork = TestnetV0;
+
+#[cfg(feature = "mainnet")]
+pub type CurrentNetwork = MainnetV0;
+
+//pub type CurrentNetwork = TestnetV0;
 //pub type CurrentNetwork = MainnetV0;
 pub type TransactionID = <CurrentNetwork as Network>::TransactionID;
 pub type CiphertextRecord = Record<CurrentNetwork, Ciphertext>;
@@ -104,9 +110,12 @@ pub type Program = snarkvm::synthesizer::Program<CurrentNetwork>;
 pub type Package = snarkvm::package::Package<CurrentNetwork>;
 
 pub const DEFAULT_BASE_URL: &str = "https://api.explorer.provable.com/v1";
-//https://api.explorer.aleo.org/v1
-//https://api.explorer.provable.com/v1
 
+#[cfg(feature = "testnet")]
 pub const DEFAULT_TESTNET: &str = "testnet";
+
+#[cfg(feature = "mainnet")]
+pub const DEFAULT_TESTNET: &str = "mainnet";
+//pub const DEFAULT_TESTNET: &str = "testnet";
 pub const MAINNET: &str = "mainnet";
 pub const MICROCREDITS: u64 = 1_000_000; // 1 credit = 1_000_000 microcredits

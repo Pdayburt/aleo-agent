@@ -36,3 +36,8 @@ snarkvm = { workspace = true }
 ureq = "2.9.6"
 indexmap = "2"
 once_cell = "1"
+
+[features]
+default = ["testnet"]  # 默认使用测试网
+testnet = []          # 测试网特性
+mainnet = []          # 主网特性

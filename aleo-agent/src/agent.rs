@@ -373,7 +373,7 @@ impl Agent {
     /// let transfer_args = TransferArgs::from(amount, recipient_address, priority_fee, None, TransferType::Public);
     /// let transfer_result = agent.transfer(transfer_args);
     /// ```
-    pub fn transfer(&self, args: TransferArgs) -> Result<String> {
+    pub fn transfer(&self, program_id: &str, args: TransferArgs) -> Result<String> {
         match &(args.transfer_type) {
             TransferType::Private(from_record) | TransferType::PrivateToPublic(from_record) => {
                 ensure!(
@@ -398,19 +398,19 @@ impl Agent {
         let store = ConsensusStore::open(None)?;
         let vm = VM::from(store)?;
         // Specify the network state query
-       // let query = Query::from(self.base_url().clone());
+        // let query = Query::from(self.base_url().clone());
         // Create a new transaction.
-      //  let query = Some(query);
+        //  let query = Some(query);
         let start = Instant::now();
 
         let execution = vm.execute(
             self.account().private_key(),
-            ("credits.aleo", transfer_function),
+            (program_id, transfer_function),
             inputs.iter(),
             None,
             args.priority_fee,
             None, // 不提供 Query，保持离线
-          //  query,
+            //  query,
             rng,
         )?;
         let duration = start.elapsed();

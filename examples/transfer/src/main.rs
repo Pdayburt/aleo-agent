@@ -55,8 +55,11 @@ fn test_transfer() -> Result<()> {
         600_000,
         None,
         TransferType::Public,
+
     );
-    let tx_hash = alice_agent.transfer(transfer_args)?;
+    pub const CREDITS_PROGRAM_ID: &str = "credits.aleo";
+
+    let tx_hash = alice_agent.transfer(CREDITS_PROGRAM_ID, transfer_args)?;
     println!("execution: {tx_hash}");
     Ok(())
 }
