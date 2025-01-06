@@ -23,6 +23,6 @@ branch = "mainnet"
 default-features = true
 
 [features]
-default = ["testnet"]  # 默认使用测试网
+default = ["mainnet"]  # 默认使用测试网
 testnet = []          # 测试网特性
 mainnet = []          # 主网特性
