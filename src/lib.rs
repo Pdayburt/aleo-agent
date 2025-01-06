@@ -60,6 +60,7 @@
 
 pub use snarkvm::prelude::{
     TestnetV0,
+    MainnetV0,
     Uniform,
     Entry,Literal,Network,Record
 };
