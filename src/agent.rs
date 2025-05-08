@@ -10,16 +10,11 @@ use std::ops::Range;
 use std::str::FromStr;
 use std::time::Instant;
 
-
 use ureq;
 use ureq::Proxy;
 
-use crate::{
-    Address, CiphertextRecord, ConsensusStore, CurrentNetwork, Entry, Field, Identifier, Literal,
-    Plaintext, PlaintextRecord, ProgramID, Query, Value, DEFAULT_BASE_URL,
-    DEFAULT_TESTNET, VM, Transaction,
-    //,
-};
+
+use crate::{Address, CiphertextRecord, ConsensusStore, CurrentNetwork, Entry, Field, Identifier, Literal, MainnetV0, Plaintext, PlaintextRecord, ProgramID, Query, Transaction, Value, DEFAULT_BASE_URL, DEFAULT_TESTNET, VM};
 
 #[derive(Clone)]
 pub struct Agent {
@@ -395,13 +390,15 @@ impl Agent {
         let transfer_function = args.transfer_type.to_string();
         let rng = &mut rand::thread_rng();
         // Initialize a VM
-        let store = ConsensusStore::open(None)?;
+        let storage_path = std::path::PathBuf::from("/data/aleo"); // 指定存储路径
+        let store = ConsensusStore::open(storage_path)?;
         let vm = VM::from(store)?;
         // Specify the network state query
-        // let query = Query::from(self.base_url().clone());
-        // Create a new transaction.
-        //  let query = Some(query);
         let start = Instant::now();
+        // 创建REST API查询对象
+        let api_url = "https://api.explorer.provable.com/v1";
+        let query = Query::from(api_url);
+
 
         let execution = vm.execute(
             self.account().private_key(),
@@ -409,8 +406,8 @@ impl Agent {
             inputs.iter(),
             None,
             args.priority_fee,
-            None, // 不提供 Query，保持离线
-            //  query,
+           // None, // 不提供 Query，保持离线
+            Some(query),
             rng,
         )?;
         let duration = start.elapsed();

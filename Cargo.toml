@@ -16,11 +16,9 @@ thiserror = "1"
 indexmap = "2.2.6"
 once_cell = "1.19.0"
 ureq = "2.10.1"
+snarkvm = "1.6.0"
 
-[dependencies.snarkvm]
-git = "https://github.com/AleoNet/snarkVM.git"
-branch = "mainnet"
-default-features = true
+
 
 [features]
 default = ["mainnet"]  # 默认使用主网

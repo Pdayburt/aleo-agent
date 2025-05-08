@@ -85,7 +85,8 @@ impl Agent {
     fn initialize_vm(program: &Program) -> anyhow::Result<VM> {
         // Create an ephemeral SnarkVM to store the programs
         // Initialize an RNG and query object for the transaction
-        let store = ConsensusStore::open(None)?;
+        let storage_path = std::path::PathBuf::from("/data/aleo"); // 指定存储路径
+        let store = ConsensusStore::open(storage_path)?;
         let vm = VM::from(store)?;
 
         // Resolve imports

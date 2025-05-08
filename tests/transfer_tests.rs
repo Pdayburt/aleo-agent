@@ -28,7 +28,7 @@ fn test_transfer() -> Result<()> {
          priority_fee: u64,
          fee_record: Option<PlaintextRecord>,
          transfer_type: TransferType,*/
-        1_000_000,
+        100_000,
         //MICROCREDITS, // 1 credit
         bob_address.to_owned(),
         0,
