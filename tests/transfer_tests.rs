@@ -6,7 +6,6 @@ use aleo_agent::account::Account;
 use aleo_agent::agent::{Agent, TransferArgs, TransferType};
 
 #[test]
-
 fn test_transfer() -> Result<()> {
 
     // private key format: APrivateKey1zkp...
@@ -18,9 +17,6 @@ fn test_transfer() -> Result<()> {
     let bob_account = Account::from_private_key(bob_key)?;
     let bob_address = bob_account.address();
 
-    // get alice public balance
-    /*  let public_balance = alice_agent.get_public_balance()?;
-      println!("Alice Public Balance : {}", public_balance);*/
     // public transfer to public account
     let transfer_args = TransferArgs::from(
         /* amount: u64,
@@ -28,13 +24,14 @@ fn test_transfer() -> Result<()> {
          priority_fee: u64,
          fee_record: Option<PlaintextRecord>,
          transfer_type: TransferType,*/
-        100_000,
+        300_000,
         //MICROCREDITS, // 1 credit
         bob_address.to_owned(),
         0,
         None,
         TransferType::Public,
-
+        7200000,
+        "sr15urj28af568vkuxy5rdcayr2upgapf4p9knwwmzehqjp65hmdqqqrpuv4g",
     );
     pub const CREDITS_PROGRAM_ID: &str = "credits.aleo";
 

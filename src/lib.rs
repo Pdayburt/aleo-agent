@@ -41,6 +41,8 @@
 //!         1, // priority fee
 //!         None, // no record, using public balance
 //!         TransferType::Public, // transfer 1 credit using public balance
+//!         000,
+//!         ""
 //!     );
 //!     let tx_hash = agent.transfer("",transfer_args)?;
 //!     println!("Transfer tx hash: {}", tx_hash);
@@ -73,7 +75,6 @@ pub mod builder;
 pub mod chain;
 pub mod deploy;
 pub mod program;
-
 
 #[cfg(feature = "testnet")]
 pub type CurrentNetwork = TestnetV0;

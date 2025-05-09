@@ -395,10 +395,32 @@ impl Agent {
         let vm = VM::from(store)?;
         // Specify the network state query
         let start = Instant::now();
-        // 创建REST API查询对象
-        let api_url = "https://api.explorer.provable.com/v1";
-        let query = Query::from(api_url);
 
+
+        // 创建模拟服务器
+        let mut mock_server = mockito::Server::new();
+        // 配置区块高度端点
+        // 1. 配置区块高度端点
+        mock_server
+            .mock("GET", "/mainnet/block/height/latest")
+            .with_status(200)
+            .with_header("content-type", "application/json") // 使用正确的头
+            .with_body(args.block_height.to_string()) // 直接使用提供的值
+            .create();
+        // 2. 配置状态根端点 - 这是当前缺少的部分
+        mock_server
+            .mock("GET", "/mainnet/stateRoot/latest")
+            .with_status(200)
+            .with_header("content-type", "application/json") // 使用正确的头
+            .with_body(format!("\"{}\"", args.state_root)) // 直接使用提供的值
+            .create();
+
+        // 使用模拟服务器URL
+        let query = Query::from(mock_server.url());
+
+        // // 创建REST API查询对象
+        // let api_url = "https://api.explorer.provable.com/v1";
+        // let query = Query::from(api_url);
 
         let execution = vm.execute(
             self.account().private_key(),
@@ -406,8 +428,7 @@ impl Agent {
             inputs.iter(),
             None,
             args.priority_fee,
-           // None, // 不提供 Query，保持离线
-            Some(query),
+            Some(query), // None, // 不提供 Query，保持离线
             rng,
         )?;
         let duration = start.elapsed();
@@ -468,6 +489,9 @@ pub struct TransferArgs {
     recipient_address: Address,
     transfer_type: TransferType,
     fee_record: Option<PlaintextRecord>,
+    // 新增字段
+    block_height: u64,
+    state_root: String,
 }
 
 impl TransferArgs {
@@ -491,7 +515,7 @@ impl TransferArgs {
     /// let recipient_address = Address::zero();
     /// let amount = 10 * MICROCREDITS; // 10 credit
     /// let priority_fee = 0;
-    /// let transfer_args = TransferArgs::from(amount, recipient_address, priority_fee, None, TransferType::Public);
+    /// let transfer_args = TransferArgs::from(amount, recipient_address, priority_fee, None, TransferType::Public,00,"");
     /// ```
     pub fn from(
         amount: u64,
@@ -499,6 +523,8 @@ impl TransferArgs {
         priority_fee: u64,
         fee_record: Option<PlaintextRecord>,
         transfer_type: TransferType,
+        block_height: u64,
+        state_root: impl Into<String>,
     ) -> Self {
         Self {
             amount,
@@ -506,8 +532,13 @@ impl TransferArgs {
             recipient_address,
             transfer_type,
             fee_record,
+            block_height,
+            state_root: state_root.into()
         }
     }
+
+    // 添加设置区块高度的方法
+
 
     /// Convert the transfer arguments to a vector of values.
     ///
